@@ -1,0 +1,30 @@
+name: Update README
+
+on:
+  workflow_dispatch: # Ejecuta manualmente
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Update README markers
+        run: |
+          # Reemplaza contenido entre marcadores START y END
+          sed -i '/<!-- START SCOPE -->/,/<!-- END SCOPE -->/c\<!-- START SCOPE -->\nUpdated project scope automatically\n<!-- END SCOPE -->' README.md
+          sed -i '/<!-- START ACCEPTANCE -->/,/<!-- END ACCEPTANCE -->/c\<!-- START ACCEPTANCE -->\nUpdated acceptance criteria automatically\n<!-- END ACCEPTANCE -->' README.md
+          sed -i '/<!-- START DOD -->/,/<!-- END DOD -->/c\<!-- START DOD -->\nUpdated DoD automatically\n<!-- END DOD -->' README.md
+
+      - name: Commit and Push changes
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add README.md
+          git commit -m "Automated README update"
+          git push
+        env:
+          REPO_TOKEN: ${{ secrets.REPO_TOKEN }}
+
